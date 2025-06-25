@@ -1,12 +1,43 @@
-# React + Vite
+# Recipe Generator
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Overview
+Recipe Generator is a web application that uses AI to generate meal recipes based on user input. Enter the flavors or types of food you're craving, and the app will suggest three unique recipes, each with a preview. You can expand any recipe to see full ingredients and instructions, and generate different recipes as many times as you like.
 
-Currently, two official plugins are available:
+## Features
+- Enter a flavor prompt (e.g., "spicy", "Italian", "comfort food")
+- Get three recipe suggestions tailored to your input
+- See a preview of each recipe before expanding
+- Expand a recipe to view full ingredients and step-by-step instructions
+- Generate different recipes with a single click
+- Responsive, clean, and modern UI
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## How to Use
 
-## Expanding the ESLint configuration
+### 1. Installation
+Clone the repository and install dependencies:
+```sh
+git clone https://github.com/ctsapugay/recipe_generator.git
+cd recipe_generator/recipe_generator
+npm install
+```
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+### 2. Running Locally
+Start the development server:
+```sh
+npm run dev
+```
+Open the local URL shown in your terminal (usually http://localhost:5173/) in your browser.
+
+### 3. Usage
+- On the home screen, enter a flavor or food type you're craving and click **Generate Recipes**.
+- Browse the three suggested recipes. Each card shows the recipe name and a short preview.
+- Click **Expand** to see the full recipe with ingredients and instructions.
+- Click **Generate Different Recipes** to see three new suggestions based on your prompt.
+- Click **Back to Prompt Screen** to enter a new craving or flavor.
+
+## Customization
+- You can add more recipes or connect to a real AI/LLM backend for dynamic recipe generation.
+
+---
+
+Enjoy discovering new meal ideas with Recipe Generator!
