@@ -2,11 +2,11 @@ import { Routes, Route, useNavigate, useParams } from 'react-router-dom'
 import { useState, useEffect } from 'react'
 import './App.css'
 
-const mockRecipes = [
+// Fallback recipes in case API is not available
+const fallbackRecipes = [
   {
     id: '1',
     name: 'Spaghetti alla Puttanesca',
-    image: 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=400&q=80',
     ingredients: [
       '2 tablespoons olive oil',
       '1/2 cup chopped onion',
@@ -30,7 +30,6 @@ const mockRecipes = [
   {
     id: '2',
     name: 'Blueberry Muffins',
-    image: 'https://images.unsplash.com/photo-1506368249639-73a05d6f6488?auto=format&fit=crop&w=400&q=80',
     ingredients: [
       '1 1/2 cups all-purpose flour',
       '3/4 cup sugar',
@@ -51,7 +50,6 @@ const mockRecipes = [
   {
     id: '3',
     name: 'Shrimp Tacos',
-    image: 'https://images.unsplash.com/photo-1464306076886-debca5e8a6b0?auto=format&fit=crop&w=400&q=80',
     ingredients: [
       '1 pound shrimp, peeled and deveined',
       '2 tablespoons olive oil',
@@ -69,219 +67,65 @@ const mockRecipes = [
       'Warm tortillas. Fill with shrimp, cabbage, and a dollop of sour cream. Serve with lime wedges.',
     ],
   },
-  {
-    id: '4',
-    name: 'Caprese Salad',
-    ingredients: [
-      '2 large tomatoes',
-      '8 oz fresh mozzarella',
-      'Fresh basil leaves',
-      '2 tbsp olive oil',
-      'Salt and pepper to taste',
-    ],
-    instructions: [
-      'Slice tomatoes and mozzarella. Layer with basil leaves. Drizzle with olive oil, sprinkle with salt and pepper, and serve.',
-    ],
-  },
-  {
-    id: '5',
-    name: 'Chicken Stir Fry',
-    ingredients: [
-      '2 chicken breasts',
-      '2 cups mixed vegetables',
-      '2 tbsp soy sauce',
-      '1 tbsp sesame oil',
-      '1 clove garlic',
-    ],
-    instructions: [
-      'Cut chicken into strips and cook in sesame oil. Add garlic and vegetables, stir fry, then add soy sauce and cook until done.',
-    ],
-  },
-  {
-    id: '6',
-    name: 'Classic Pancakes',
-    ingredients: [
-      '1 cup flour',
-      '2 tbsp sugar',
-      '1 cup milk',
-      '1 egg',
-      '2 tbsp butter',
-    ],
-    instructions: [
-      'Mix dry and wet ingredients separately, then combine. Cook on a griddle until golden brown on both sides.',
-    ],
-  },
-  {
-    id: '7',
-    name: 'Greek Salad',
-    ingredients: [
-      '2 cups chopped cucumber',
-      '2 cups chopped tomatoes',
-      '1/2 cup feta cheese',
-      '1/4 cup olives',
-      '2 tbsp olive oil',
-    ],
-    instructions: [
-      'Combine all ingredients in a bowl, toss with olive oil, and serve chilled.',
-    ],
-  },
-  {
-    id: '8',
-    name: 'Vegetable Soup',
-    ingredients: [
-      '4 cups vegetable broth',
-      '2 carrots',
-      '2 celery stalks',
-      '1 potato',
-      '1 cup green beans',
-    ],
-    instructions: [
-      'Chop all vegetables, add to broth, and simmer until tender.',
-    ],
-  },
 ]
 
-const allRecipes = [
-  ...mockRecipes,
-  {
-    id: '9',
-    name: 'Egg Fried Rice',
-    ingredients: [
-      '2 cups cooked rice',
-      '2 eggs',
-      '1/2 cup peas',
-      '2 tbsp soy sauce',
-      '1 green onion',
-    ],
-    instructions: [
-      'Scramble eggs in a pan, add rice, peas, and soy sauce. Stir fry and top with green onion.',
-    ],
-  },
-  {
-    id: '10',
-    name: 'Beef Tacos',
-    ingredients: [
-      '1 lb ground beef',
-      '8 taco shells',
-      '1/2 cup shredded lettuce',
-      '1/2 cup shredded cheese',
-      '1 tomato',
-    ],
-    instructions: [
-      'Cook beef with seasoning, fill taco shells, and top with lettuce, cheese, and tomato.',
-    ],
-  },
-  {
-    id: '11',
-    name: 'Lemon Garlic Salmon',
-    ingredients: [
-      '2 salmon fillets',
-      '1 lemon',
-      '2 cloves garlic',
-      '1 tbsp olive oil',
-      'Salt and pepper',
-    ],
-    instructions: [
-      'Season salmon, top with lemon and garlic, bake at 400°F for 15 minutes.',
-    ],
-  },
-  {
-    id: '12',
-    name: 'Vegetarian Chili',
-    ingredients: [
-      '1 can kidney beans',
-      '1 can black beans',
-      '1 can diced tomatoes',
-      '1 onion',
-      '2 tbsp chili powder',
-    ],
-    instructions: [
-      'Cook onion, add beans, tomatoes, and chili powder. Simmer for 20 minutes.',
-    ],
-  },
-  {
-    id: '13',
-    name: 'Avocado Toast',
-    ingredients: [
-      '2 slices bread',
-      '1 avocado',
-      'Salt and pepper',
-      'Chili flakes (optional)',
-    ],
-    instructions: [
-      'Toast bread, mash avocado, spread on toast, season, and top with chili flakes.',
-    ],
-  },
-  {
-    id: '14',
-    name: 'Tomato Basil Pasta',
-    ingredients: [
-      '8 oz pasta',
-      '2 cups cherry tomatoes',
-      '1/4 cup fresh basil',
-      '2 cloves garlic',
-      '2 tbsp olive oil',
-    ],
-    instructions: [
-      'Cook pasta, sauté tomatoes and garlic, toss with pasta and basil.',
-    ],
-  },
-  {
-    id: '15',
-    name: 'Miso Soup',
-    ingredients: [
-      '4 cups dashi broth',
-      '2 tbsp miso paste',
-      '1/2 cup tofu',
-      '2 green onions',
-      '1 sheet nori',
-    ],
-    instructions: [
-      'Heat broth, dissolve miso, add tofu, green onions, and nori.',
-    ],
-  },
-  {
-    id: '16',
-    name: 'Banana Bread',
-    ingredients: [
-      '3 ripe bananas',
-      '2 cups flour',
-      '1/2 cup sugar',
-      '1/3 cup butter',
-      '2 eggs',
-    ],
-    instructions: [
-      'Mash bananas, mix with other ingredients, bake at 350°F for 50 minutes.',
-    ],
-  },
-]
+async function generateRecipesFromAPI(prompt) {
+  try {
+    console.log('Calling API with prompt:', prompt);
+    
+    const response = await fetch('http://localhost:3001/api/generate-recipes', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ prompt }),
+    });
 
-function getMatchingRecipes(prompt, excludeIds = []) {
-  if (!prompt) {
-    // If no prompt, return random recipes not in excludeIds
-    return allRecipes.filter(r => !excludeIds.includes(r.id)).sort(() => 0.5 - Math.random()).slice(0, 3)
+    console.log('Response status:', response.status);
+    console.log('Response ok:', response.ok);
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error('API Error:', errorText);
+      throw new Error(`HTTP error! status: ${response.status}, message: ${errorText}`);
+    }
+
+    const data = await response.json();
+    console.log('API Response:', data);
+    
+    if (!data.recipes || !Array.isArray(data.recipes)) {
+      console.error('Invalid API response format:', data);
+      throw new Error('Invalid response format from API');
+    }
+    
+    return data.recipes;
+  } catch (error) {
+    console.error('Error calling API:', error);
+    console.log('Falling back to mock recipes');
+    // Return fallback recipes if API fails
+    return fallbackRecipes;
   }
-  const lowerPrompt = prompt.toLowerCase()
-  // Simple matching: check if prompt words are in recipe name or ingredients
-  const matches = allRecipes.filter(r =>
-    !excludeIds.includes(r.id) &&
-    (r.name.toLowerCase().includes(lowerPrompt) ||
-      r.ingredients.some(ing => ing.toLowerCase().includes(lowerPrompt)))
-  )
-  if (matches.length >= 3) return matches.slice(0, 3)
-  // If not enough matches, fill with random recipes
-  const others = allRecipes.filter(r => !excludeIds.includes(r.id) && !matches.includes(r))
-  return [...matches, ...others.sort(() => 0.5 - Math.random()).slice(0, 3 - matches.length)]
 }
 
-function PromptScreen({ setPrompt, onGenerate }) {
+function PromptScreen({ setPrompt, onGenerate, setIsLoading }) {
   const [input, setInput] = useState('')
   const navigate = useNavigate()
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
+    setIsLoading(true)
     setPrompt(input)
-    onGenerate(input)
+    
+    try {
+      const recipes = await generateRecipesFromAPI(input)
+      onGenerate(input, recipes)
+    } catch (error) {
+      console.error('Failed to generate recipes:', error)
+      onGenerate(input, fallbackRecipes)
+    } finally {
+      setIsLoading(false)
+    }
+    
     navigate('/recipes')
   }
 
@@ -306,33 +150,41 @@ function PromptScreen({ setPrompt, onGenerate }) {
   )
 }
 
-function RecipesScreen({ prompt, shownRecipes, setShownRecipes }) {
+function RecipesScreen({ prompt, shownRecipes, setShownRecipes, isLoading, setIsLoading }) {
   const navigate = useNavigate()
-  const [excludeIds, setExcludeIds] = useState([])
 
-  useEffect(() => {
-    setExcludeIds([])
-  }, [prompt])
-
-  const handleExpand = (id) => {
-    navigate(`/recipes/${id}`)
-  }
-
-  const handleGenerateDifferent = () => {
-    const newExclude = [...excludeIds, ...shownRecipes.map(r => r.id)]
-    const newRecipes = getMatchingRecipes(prompt, newExclude)
-    setShownRecipes(newRecipes)
-    setExcludeIds(newExclude)
+  const handleGenerateDifferent = async () => {
+    setIsLoading(true)
+    try {
+      const recipes = await generateRecipesFromAPI(prompt)
+      setShownRecipes(recipes)
+    } catch (error) {
+      console.error('Failed to generate different recipes:', error)
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   const handleBack = () => {
     navigate('/')
   }
 
+  if (isLoading) {
+    return (
+      <div className="background recipes-screen">
+        <div className="recipes-container">
+          <h1 className="title">Generating Recipes...</h1>
+          <div className="loading-spinner">Loading...</div>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className="background recipes-screen">
       <div className="recipes-container">
         <h1 className="title">Your Recipes</h1>
+        {prompt && <p className="prompt-display">Based on: "{prompt}"</p>}
         <div className="recipes-list">
           {shownRecipes.map(recipe => (
             <div className="recipe-card" key={recipe.id}>
@@ -342,7 +194,7 @@ function RecipesScreen({ prompt, shownRecipes, setShownRecipes }) {
                   <p><strong>Ingredient:</strong> {recipe.ingredients[0]}</p>
                   <p><strong>Step:</strong> {recipe.instructions[0].split('.').slice(0,1)[0]}.</p>
                 </div>
-                <button className="expand-btn" onClick={() => handleExpand(recipe.id)}>
+                <button className="expand-btn" onClick={() => navigate(`/recipes/${recipe.id}`)}>
                   Expand
                 </button>
               </div>
@@ -361,7 +213,7 @@ function RecipesScreen({ prompt, shownRecipes, setShownRecipes }) {
 function RecipeDetailScreen({ shownRecipes }) {
   const { id } = useParams()
   const navigate = useNavigate()
-  const recipe = allRecipes.find(r => r.id === id)
+  const recipe = shownRecipes.find(r => r.id === id)
 
   if (!recipe) {
     return <div className="background"><div className="prompt-container"><h2>Recipe not found.</h2></div></div>
@@ -407,16 +259,17 @@ function RecipeDetailScreen({ shownRecipes }) {
 
 function App() {
   const [prompt, setPrompt] = useState('')
-  const [shownRecipes, setShownRecipes] = useState(() => getMatchingRecipes(''))
+  const [shownRecipes, setShownRecipes] = useState(fallbackRecipes)
+  const [isLoading, setIsLoading] = useState(false)
 
-  const handleGenerate = (input) => {
-    setShownRecipes(getMatchingRecipes(input))
+  const handleGenerate = (input, recipes) => {
+    setShownRecipes(recipes)
   }
 
   return (
     <Routes>
-      <Route path="/" element={<PromptScreen setPrompt={setPrompt} onGenerate={handleGenerate} />} />
-      <Route path="/recipes" element={<RecipesScreen prompt={prompt} shownRecipes={shownRecipes} setShownRecipes={setShownRecipes} />} />
+      <Route path="/" element={<PromptScreen setPrompt={setPrompt} onGenerate={handleGenerate} setIsLoading={setIsLoading} />} />
+      <Route path="/recipes" element={<RecipesScreen prompt={prompt} shownRecipes={shownRecipes} setShownRecipes={setShownRecipes} isLoading={isLoading} setIsLoading={setIsLoading} />} />
       <Route path="/recipes/:id" element={<RecipeDetailScreen shownRecipes={shownRecipes} />} />
     </Routes>
   )
